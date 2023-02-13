@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "main": "dist/main.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=\"development\" && webpack && electron .",
+    "start": "cross-env NODE_ENV=\"development\" && webpack && electron-forge start",
     "package": "cross-env NODE_ENV=\"production\" && webpack && electron-forge package",
     "make": "cross-env NODE_ENV=\"production\" && webpack && electron-forge make",
     "publish": "cross-env NODE_ENV=\"production\" && webpack && electron-forge publish",
