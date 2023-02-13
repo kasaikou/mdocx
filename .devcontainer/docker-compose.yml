@@ -11,5 +11,6 @@ services:
       - ..:/workspace:cached
     command: /bin/sh -c "while sleep 1000; do :; done"
     user: vscode
+    privileged: true
     environment:
       - DISPLAY=:0
