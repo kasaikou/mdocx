@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "mdocx"
+version = "0.1.0"
+description = ""
+authors = ["Kasai Kou <80010105+streamwest-1629@users.noreply.github.com>"]
+readme = "README.md"
+packages = [{include = "mdocx"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
