@@ -26,7 +26,7 @@ const main: Configuration = {
     ...common,
     target: "electron-main",
     entry: {
-        main: "./src/index.ts",
+        main: "./typescript/index.ts",
     },
 }
 
