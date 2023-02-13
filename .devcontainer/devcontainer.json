@@ -1,0 +1,19 @@
+{
+    "name": "github.com/streamwest-1629/mdocx Devcontainer",
+    "dockerComposeFile": "./docker-compose.yml",
+    "service": "devcontainer",
+    "workspaceFolder": "/workspace",
+    "remoteUser": "vscode",
+    "postCreateCommand": "/bin/sh .devcontainer/postCreate.sh",
+    "postStartCommand": "yarn install",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "eamodio.gitlens",
+                "mhutchie.git-graph",
+                "dbaeumer.vscode-eslint",
+                "ms-python.python"
+            ]
+        }
+    }
+}

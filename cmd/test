@@ -1,0 +1,7 @@
+#!/bin/sh
+
+export DISPLAY=:0
+yarn install
+sudo chown root /workspace/node_modules/electron/dist/chrome-sandbox &&
+sudo chmod 4755 /workspace/node_modules/electron/dist/chrome-sandbox &&
+yarn start
