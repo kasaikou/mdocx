@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "main": "dist/main.js",
   "scripts": {
+    "test": "jest --no-cache",
     "start": "cross-env NODE_ENV=\"development\" && webpack && electron-forge start",
     "package": "cross-env NODE_ENV=\"production\" && webpack && electron-forge package",
     "make": "cross-env NODE_ENV=\"production\" && webpack && electron-forge make",
@@ -23,6 +24,7 @@
     "@electron-forge/maker-squirrel": "^6.0.5",
     "@electron-forge/maker-zip": "^6.0.5",
     "@electron-forge/plugin-webpack": "^6.0.5",
+    "@types/jest": "^29.4.0",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "@vercel/webpack-asset-relocator-loader": "1.7.3",
@@ -30,16 +32,22 @@
     "css-loader": "^6.0.0",
     "electron": "23.0.0",
     "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-import": "^2.25.0",
     "fork-ts-checker-webpack-plugin": "^7.2.13",
+    "jest": "^29.4.2",
     "node-loader": "^2.0.0",
+    "prettier": "2.8.4",
     "style-loader": "^3.0.0",
+    "ts-jest": "^29.0.5",
     "ts-loader": "^9.2.2",
     "ts-node": "^10.0.0",
     "typescript": "~4.5.4",
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "electron-squirrel-startup": "^1.0.0",
+    "mathjax-full": "^3.2.2",
+    "zod": "^3.20.6"
   }
 }
