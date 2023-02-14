@@ -141,7 +141,7 @@ function ParseMarkdown(markdown: string): mdocx.MdocxDocument {
   const paragraph: mdocx.MdocxParagraph[] = [];
   const reference: mdocx.MdocxReference[] = [];
   for (; lineIdx < mdlines.length; lineIdx++) {
-    const status: mdocx.MdocxParagraphStatus = {
+    const status: mdocx.MdocxMarkdownStatus = {
       line: lineIdx + 1,
     };
 

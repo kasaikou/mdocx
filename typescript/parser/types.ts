@@ -86,7 +86,7 @@ type MdocxDocument = {
 export {
   MdocxDocument,
   MdocxParagraph,
-  MdocxMarkdownStatus as MdocxParagraphStatus,
+  MdocxMarkdownStatus,
   MdocxReference,
   MdocxText,
   MdocxTextOptions,
