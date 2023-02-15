@@ -2,8 +2,11 @@ import abc
 import cairosvg
 import docx
 import docx.document
+import docx.enum.style
 import docx.enum.text
 import docx.shared
+import docx.styles.style
+import docx.styles.styles
 import docx.text.paragraph
 import docx.text.run
 import PIL.Image
@@ -408,18 +411,22 @@ class Config:
         self.currentDir = currentDir
         self.destinationFilename = destinationFilename
 
-    def push_to_document(self, target: docx.document.Document):
+    def make_document(self):
         os.chdir(self.currentDir)
+
+        target = docx.Document(self.styleTemplateFilename)
+        paragraphs = target.paragraphs
+        for paragraph in paragraphs:
+            p = paragraph._element
+            p.getparent().remove(p)
 
         target.core_properties.title = self.title
         if self.author:
             target.core_properties.author = self.author
         if self.description:
             target.core_properties.subject = self.description
-        if self.styleTemplateFilename:
-            if os.path.isfile(self.styleTemplateFilename) == False:
-                raise RuntimeError(f"file not exist: '{self.styleTemplateFilename}'")
-            target.styles = docx.Document(self.styleTemplateFilename).styles
+
+        return target
 
     def save(self, document: docx.document.Document):
         document.save(self.destinationFilename)
@@ -430,7 +437,7 @@ class Config:
         description = dict["description"] if "description" in dict else None
         author = dict["authorName"] if "authorName" in dict else None
         styleTemplateFilename = (
-            dict["styleTemplateFilename"] if "styleTmplateFilename" in dict else None
+            dict["styleTemplateFilename"] if "styleTemplateFilename" in dict else None
         )
         currentDir = get_key("currentDir", dict, dictName)
         destinationFilename = get_key("destinationFilename", dict, dictName)
@@ -449,10 +456,9 @@ if __name__ == "__main__":
     import json, sys
 
     data = json.loads(sys.stdin.buffer.read())
-    document = docx.Document()
     config = get_key("config", data, "body")
     config = Config.from_dict(config, "config")
-    config.push_to_document(document)
+    document = config.make_document()
 
     references = get_key("references", data, "body")
     references: ReferenceDict = {
