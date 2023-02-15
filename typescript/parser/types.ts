@@ -68,6 +68,8 @@ type MdocxDocumentConfig = {
   description?: string;
   authorName?: string;
   styleTemplateFilename?: string;
+  currentDir: string;
+  destinationFilename: string;
 };
 
 type MdocxReference = {
@@ -79,14 +81,14 @@ type MdocxReference = {
 
 type MdocxDocument = {
   config: MdocxDocumentConfig;
-  references: MdocxReference[];
+  references: { [key: string]: MdocxReference };
   paragraphs: MdocxParagraph[];
 };
 
 export {
   MdocxDocument,
   MdocxParagraph,
-  MdocxMarkdownStatus as MdocxParagraphStatus,
+  MdocxMarkdownStatus,
   MdocxReference,
   MdocxText,
   MdocxTextOptions,
