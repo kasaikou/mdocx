@@ -413,6 +413,8 @@ class Config:
         if self.description:
             target.core_properties.subject = self.description
         if self.styleTemplateFilename:
+            if os.path.isfile(self.styleTemplateFilename) == False:
+                raise RuntimeError(f"file not exist: '{self.styleTemplateFilename}'")
             target.styles = docx.Document(self.styleTemplateFilename).styles
 
     def save(self, document: docx.document.Document):
