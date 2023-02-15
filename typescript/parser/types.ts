@@ -68,6 +68,8 @@ type MdocxDocumentConfig = {
   description?: string;
   authorName?: string;
   styleTemplateFilename?: string;
+  currentDir: string;
+  destinationFilename: string;
 };
 
 type MdocxReference = {

@@ -98,7 +98,12 @@ function parseText(text: string): mdocx.MdocxText[] {
   });
 }
 
-function ParseMarkdown(markdown: string): mdocx.MdocxDocument {
+function ParseMarkdown(
+  markdown: string,
+  currentDir: string,
+  destination: string,
+  styleTemplate?: string
+): mdocx.MdocxDocument {
   const reEmpty = /^\s*$/;
   const reSeparator = /^---\s*$/;
   const reHeader = /^(#{1,6})\s+/;
@@ -286,6 +291,9 @@ function ParseMarkdown(markdown: string): mdocx.MdocxDocument {
       title: header.title ? header.title : 'No Name',
       description: header.description,
       authorName: header.author,
+      currentDir: currentDir,
+      destinationFilename: destination,
+      styleTemplateFilename: styleTemplate,
     },
     references: reference,
     paragraphs: paragraph,
