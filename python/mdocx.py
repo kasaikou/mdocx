@@ -134,7 +134,8 @@ class SvgText(MdocxText):
         self, target: docx.text.paragraph.Paragraph
     ) -> docx.text.run.Run:
         run = target.add_run()
-        run.add_picture(io.BytesIO(self.png))
+        w, h = PIL.Image.open(io.BytesIO(self.png)).size
+        run.add_picture(io.BytesIO(self.png), width=docx.shared.Pt(w * (72 / 220)))
         return run
 
     @staticmethod
@@ -294,7 +295,10 @@ class MathjaxSvgParagraphContent(MdocxParagraphContent):
     def push_to_document(self, target: docx.document.Document) -> None:
         paragraph = target.add_paragraph()
         paragraph.alignment = docx.enum.text.WD_PARAGRAPH_ALIGNMENT.CENTER
-        paragraph.add_run().add_picture(io.BytesIO(self))
+        w, h = PIL.Image.open(io.BytesIO(self.png)).size
+        paragraph.add_picture(
+            io.BytesIO(self.png), width=docx.shared.Pt(w * (72 / 220))
+        )
 
     @staticmethod
     def from_dict(
