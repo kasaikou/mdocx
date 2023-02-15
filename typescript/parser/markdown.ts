@@ -139,7 +139,7 @@ function ParseMarkdown(markdown: string): mdocx.MdocxDocument {
   })();
 
   const paragraph: mdocx.MdocxParagraph[] = [];
-  const reference: mdocx.MdocxReference[] = [];
+  const reference: { [key: string]: mdocx.MdocxReference } = {};
   for (; lineIdx < mdlines.length; lineIdx++) {
     const status: mdocx.MdocxMarkdownStatus = {
       line: lineIdx + 1,
@@ -234,12 +234,12 @@ function ParseMarkdown(markdown: string): mdocx.MdocxDocument {
       const key = referenceMatched[1];
       const description = referenceMatched[2];
 
-      reference.push({
+      reference[key] = {
         status: status,
         key: key,
         displayName: '',
         description: parseText(description),
-      });
+      };
       continue;
     }
 

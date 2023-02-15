@@ -79,7 +79,7 @@ type MdocxReference = {
 
 type MdocxDocument = {
   config: MdocxDocumentConfig;
-  references: MdocxReference[];
+  references: { [key: string]: MdocxReference };
   paragraphs: MdocxParagraph[];
 };
 
