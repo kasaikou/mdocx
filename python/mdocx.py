@@ -8,6 +8,7 @@ import docx.text.paragraph
 import docx.text.run
 import PIL.Image
 import io
+import os
 from typing import Optional
 
 # interfaces
@@ -72,6 +73,13 @@ class MdocxTextOptions:
         self.bold = bold
         self.italic = italic
 
+    @staticmethod
+    def from_dict(dict: dict[str], dictName: str, status: MarkdownStatus):
+        bold = get_key("bold", dict, dictName, status)
+        italic = get_key("italic", dict, dictName, status)
+
+        return MdocxTextOptions(bold, italic)
+
 
 class MdocxReference:
     def __init__(
@@ -87,11 +95,11 @@ class MdocxReference:
     @staticmethod
     def from_dict(dict: dict[str], dictName: str):
         status = get_key("status", dict, dictName)
-        status = MarkdownStatus.from_dict(status)
+        status = MarkdownStatus.from_dict(status, "status")
         key = get_key("key", dict, dictName, status)
         displayName = get_key("displayName", dict, dictName, status)
 
-        return MdocxReference(key, displayName, status)
+        return MdocxReference(key=key, displayName=displayName, status=status)
 
 
 ReferenceDict = dict[str, MdocxReference]
@@ -113,12 +121,14 @@ class NormalText(MdocxText):
     @staticmethod
     def from_dict(dict: dict[str], dictName: str, status: MarkdownStatus):
         expression = get_key("expression", dict, dictName, status)
-        return NormalText(expression=expression)
+        options = get_key("options", dict, dictName, status)
+        options = MdocxTextOptions.from_dict(options, dictName, status)
+        return NormalText(expression=expression, options=options)
 
 
 class SvgText(MdocxText):
     def __init__(self, svg: str) -> None:
-        self.png = render_svg(bytes(svg))
+        self.png = render_svg(bytes(svg, encoding="utf-8"))
 
     def push_to_paragraph(
         self, target: docx.text.paragraph.Paragraph
@@ -384,15 +394,19 @@ class Config:
         description: Optional[str],
         author: Optional[str],
         styleTemplateFilename: Optional[str],
+        currentDir: str,
         destinationFilename: str,
     ):
         self.title = title
         self.description = description
         self.author = author
         self.styleTemplateFilename = styleTemplateFilename
+        self.currentDir = currentDir
         self.destinationFilename = destinationFilename
 
     def push_to_document(self, target: docx.document.Document):
+        os.chdir(self.currentDir)
+
         target.core_properties.title = self.title
         if self.author:
             target.core_properties.author = self.author
@@ -405,20 +419,22 @@ class Config:
         document.save(self.destinationFilename)
 
     @staticmethod
-    def from_dict(self, dict: dict[str], dictName: str):
+    def from_dict(dict: dict[str], dictName: str):
         title = get_key("title", dict, dictName)
         description = dict["description"] if "description" in dict else None
         author = dict["authorName"] if "authorName" in dict else None
         styleTemplateFilename = (
             dict["styleTemplateFilename"] if "styleTmplateFilename" in dict else None
         )
-        destinationFilename = get_key("destination", dict, dictName)
+        currentDir = get_key("currentDir", dict, dictName)
+        destinationFilename = get_key("destinationFilename", dict, dictName)
 
         return Config(
             title=title,
             description=description,
             author=author,
-            styleTemplateFileName=styleTemplateFilename,
+            styleTemplateFilename=styleTemplateFilename,
+            currentDir=currentDir,
             destinationFilename=destinationFilename,
         )
 
@@ -426,18 +442,18 @@ class Config:
 if __name__ == "__main__":
     import json, sys
 
-    data = json.loads(sys.stdin)
+    data = json.loads(sys.stdin.buffer.read())
     document = docx.Document()
-    config = get_key("config", dict, "body")
-    config = Config.from_dict(config)
+    config = get_key("config", data, "body")
+    config = Config.from_dict(config, "config")
     config.push_to_document(document)
 
-    references = get_key("references", dict, "body")
+    references = get_key("references", data, "body")
     references: ReferenceDict = {
         key: MdocxReference.from_dict(reference, "reference")
         for key, reference in references.items()
     }
-    paragraphs = get_key("paragraphs", dict, "body")
+    paragraphs = get_key("paragraphs", data, "body")
     push_paragraphs(paragraphs, document, references)
 
     config.save(document)
