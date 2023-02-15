@@ -10,6 +10,7 @@ packages = [{include = "mdocx"}]
 python = "^3.10"
 cairosvg = "^2.6.0"
 python-docx = "^0.8.11"
+pillow = "^9.4.0"
 
 
 [tool.poetry.group.dev.dependencies]
