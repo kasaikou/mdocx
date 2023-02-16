@@ -3,7 +3,9 @@ import { execSync } from 'child_process';
 import path from 'path';
 import cli from './worker/cli';
 
-const debugMode = app.isPackaged || process.env.NODE_ENV === 'development';
+const isPackaged =
+  path.basename(process.argv0, '.exe').startsWith('electron') == false;
+const debugMode = isPackaged || process.env.NODE_ENV === 'development';
 const resourcePath = app.isPackaged ? process.resourcesPath : '.';
 const pythonPath = path.resolve(
   path.join(resourcePath, 'build/.venv/bin/python')
@@ -22,6 +24,7 @@ async function main() {
   await cli({
     resourceDir: resourcePath,
     debugMode: debugMode,
+    arguments: process.argv.slice(isPackaged ? 1 : 2),
   });
   app.exit(0);
 }
