@@ -1,6 +1,7 @@
 import { app } from 'electron';
 import { execSync } from 'child_process';
 import path from 'path';
+import cli from './worker/cli';
 
 const debugMode = app.isPackaged || process.env.NODE_ENV === 'development';
 const resourcePath = app.isPackaged ? process.resourcesPath : '.';
@@ -17,13 +18,19 @@ async function main() {
       await execSync(`${pythonPath} --version`).toString()
     );
   }
+
+  await cli({
+    resourceDir: resourcePath,
+    debugMode: debugMode,
+  });
+  app.exit(0);
 }
 
 main()
   .catch((e) => {
     console.log(e);
-    app.exit(1);
+    app.exit(255);
   })
   .finally(() => {
-    app.exit(0);
+    app.exit(255);
   });
