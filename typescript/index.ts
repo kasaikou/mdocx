@@ -4,7 +4,9 @@ import path from 'path';
 
 const debugMode = app.isPackaged || process.env.NODE_ENV === 'development';
 const resourcePath = app.isPackaged ? process.resourcesPath : '.';
-const pythonPath = path.join(resourcePath, '.venv/bin/python');
+const pythonPath = path.resolve(
+  path.join(resourcePath, 'build/.venv/bin/python')
+);
 
 async function main() {
   if (debugMode) {

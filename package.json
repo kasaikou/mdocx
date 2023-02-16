@@ -2,7 +2,7 @@
   "name": "mdocx",
   "productName": "mdocx",
   "version": "0.1.0",
-  "main": "dist/main.js",
+  "main": "build/webpack/main.js",
   "scripts": {
     "test": "jest --no-cache",
     "start": "cross-env NODE_ENV=\"development\" && webpack && electron-forge start",
