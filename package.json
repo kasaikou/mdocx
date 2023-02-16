@@ -5,7 +5,7 @@
   "main": "build/webpack/main.js",
   "scripts": {
     "test": "jest --no-cache",
-    "start": "cross-env NODE_ENV=\"development\" && webpack && electron-forge start",
+    "start": "cross-env NODE_ENV=\"development\" && webpack && electron-forge start -- convert example/example.md --template example/example-style.docx",
     "package": "cross-env NODE_ENV=\"production\" && webpack && electron-forge package",
     "make": "cross-env NODE_ENV=\"production\" && webpack && electron-forge make",
     "publish": "cross-env NODE_ENV=\"production\" && webpack && electron-forge publish",
