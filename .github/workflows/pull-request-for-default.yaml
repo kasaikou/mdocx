@@ -31,6 +31,11 @@ jobs:
       - name: bash/setup-poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+      - name: bash/check-version
+        run: |
+          yarn --version
+          poetry --version
       - name: makefile/test
         run: make test NODE_ENV=development
 
@@ -60,6 +65,11 @@ jobs:
       - name: bash/setup-poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+      - name: bash/check-version
+        run: |
+          yarn --version
+          poetry --version
       - name: make/package
         run: |
           make electron-make ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }}
