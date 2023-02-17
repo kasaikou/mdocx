@@ -39,20 +39,7 @@ jobs:
         run: make test NODE_ENV=development --debug=v
 
   windows-build:
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [linux, windows, darwin]
-        arch: [x64]
-        include:
-          - platform: linux
-            os: ubuntu-20.04
-          - platform: windows
-            os: windows-2019
-          - platform: darwin
-            os: macos-11
-
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-2019
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -70,12 +57,11 @@ jobs:
           yarn --version
           poetry --version
       - name: bash/backslash
-        if: ${{ contains(matrix.os, 'windows') }}
         run: |
           sed -i 's@\/@\\@g' ./Makefile
       - name: make/electron-make
         run: |
-          make electron-make ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} --debug=v
+          make packaged-python-venv ARCH=x64 PLATFORM=windows --debug=v
       - name: bash/check-directory
         run: |
           ls -al .
