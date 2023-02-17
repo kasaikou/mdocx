@@ -15,17 +15,23 @@ OUT_ARTIFACT_DIR=out/mdocx-$(PLATFORM)-$(ARCH)
 poetry: poetry.lock poetry.toml pyproject.toml
 	poetry install --no-root
 
+poetry-requirements-lock: poetry
+	poetry export --without dev > $(BUILD_ARTIFACT_REQUIREMENTS_LOCK)
+
+packaged-python: poetry
+	poetry run virtualenv --always-copy $(BUILD_ARTIFACT_VENV)
+
+packaged-python-artifact: poetry-requirements-lock 
+	$(BUILD_ARTIFACT_PYTHON) -m pip install -r $(BUILD_ARTIFACT_REQUIREMENTS_LOCK)
+
+packaged-python: packaged-python-artifact
+	$(BUILD_ARTIFACT_PYTHON) -m pip uninstall -y pip
+
 yarn: yarn.lock package.json
 	yarn install --frozen-lockfile
 
-packaged-python: poetry
-	poetry run virtualenv --always-copy $(BUILD_ARTIFACT_VENV) &&
-	poetry export --without dev > $(BUILD_ARTIFACT_REQUIREMENTS_LOCK) &&
-	$(BUILD_ARTIFACT_PYTHON) -m pip install -r $(BUILD_ARTIFACT_REQUIREMENTS_LOCK) &&
-	$(BUILD_ARTIFACT_PYTHON) -m pip uninstall -y pip
-
 packaged-resources: yarn
-	mkdir -p build/fonts &&
+	mkdir -p build/fonts
 	cp "node_modules/figlet/fonts/$(LOGO_FONT).flf" "build/fonts/$(LOGO_FONT).flf"
 
 webpack: yarn webpack.config.ts
