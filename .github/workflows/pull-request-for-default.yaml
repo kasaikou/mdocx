@@ -72,8 +72,10 @@ jobs:
       - name: make/electron-make
         id: app
         run: |
+          echo "version=`npm pkg get version | sed 's/"//g'`" >> $GITHUB_OUTPUT
           make electron-make ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }}
-          echo "##[set-output name=version;]$(npx -c 'echo "$npm_package_version"')"
       - uses: actions/upload-artifact@v2
         with:
           path: out/make/zip/${{ matrix.platform }}/${{ matrix.arch }}/mdocx-${{ matrix.platform }}-${{ matrix.arch }}-${{ steps.app.outputs.version }}.zip
+    outputs:
+      version: ${{ steps.app.outputs.version }}
