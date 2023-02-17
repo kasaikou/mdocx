@@ -3,10 +3,8 @@ on:
     paths-ignore:
       - '**.md'
       - '/.**'
-      - .github/workflows/pull-request-for-default.yaml
-      - Makefile
-  push:
-    paths: [.github/workflows/pull-request-for-default.yaml, Makefile]
+  # push:
+  #   paths: [.github/workflows/pull-request-for-default.yaml, Makefile]
 env:
   NODE_VERSION: '18.13.0'
   PYTHON_VERSION: '3.10.10'
