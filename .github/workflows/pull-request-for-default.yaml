@@ -1,0 +1,65 @@
+on:
+  pull_request:
+    branches: [main]
+  push:
+    paths: [.github/workflows/pull-request-for-default.yaml]
+env:
+  NODE_VERSION: '18.13.0'
+  PYTHON_VERSION: '3.10.10'
+
+jobs:
+  lint-check:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: yarn
+
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: yarn
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: bash/setup-poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+      - name: makefile/test
+        run: make test NODE_ENV=development
+
+  multi-build:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [linux, windows, darwin]
+        arch: [x64]
+        include:
+          - platform: linux
+            os: ubuntu-20.04
+          - platform: windows
+            os: windows-2019
+          - platform: darwin
+            os: macos-11
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: yarn
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: bash/setup-poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+      - name: make/package
+        run: |
+          make electron-make ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }}
+      - uses: actions/upload-artifact@v2
+        with:
+          path: out/make/zip/${{ matrix.platform }}/${{ matrix.arch }}/mdocx-${{ matrix.platform }}-${{ matrix.arch }}-$(npx -c 'echo "$npm_package_version"').zip
