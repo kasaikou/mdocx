@@ -23,8 +23,16 @@ test('example', function () {
     body
   );
   try {
+    const pythonPath = path.resolve(
+      path.join(
+        '../..',
+        process.platform === 'win32'
+          ? 'build/.venv/Scripts/python'
+          : 'build/.venv/bin/python'
+      )
+    );
     child_process.execSync(
-      `.venv/bin/python ${path.resolve(
+      `${pythonPath} ${path.resolve(
         path.join(__dirname, '../../python/mdocx.py')
       )}`,
       {

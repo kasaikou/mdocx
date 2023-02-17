@@ -8,7 +8,12 @@ const isPackaged =
 const debugMode = isPackaged || process.env.NODE_ENV === 'development';
 const resourcePath = app.isPackaged ? process.resourcesPath : '.';
 const pythonPath = path.resolve(
-  path.join(resourcePath, 'build/.venv/bin/python')
+  path.join(
+    resourcePath,
+    process.platform === 'win32'
+      ? 'build/.venv/Scripts/python'
+      : 'build/.venv/bin/python'
+  )
 );
 
 async function main() {
