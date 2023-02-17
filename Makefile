@@ -25,6 +25,9 @@ packaged-python-library: packaged-python-venv requirements.lock
 	"$(BUILD_ARTIFACT_PYTHON)" -m pip install -r "$(BUILD_ARTIFACT_REQUIREMENTS_LOCK)"
 
 packaged-python: packaged-python-library
+	ls -al "$(BUILD_ARTIFACT_PYTHON)/../../.."
+	ls -al "$(BUILD_ARTIFACT_PYTHON)/../.."
+	ls -al "$(BUILD_ARTIFACT_PYTHON)/.."
 	"$(BUILD_ARTIFACT_PYTHON)" -m pip uninstall -y pip
 
 yarn: yarn.lock package.json
