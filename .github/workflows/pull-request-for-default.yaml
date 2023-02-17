@@ -70,9 +70,10 @@ jobs:
           yarn --version
           poetry --version
       - name: make/electron-make
+        id: app
         run: |
           make electron-make ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }}
-          echo "NPM_PACKAGE_VERSION=$(npx -c 'echo $npm_package_version') >> $GITHUB_ENV"
+          echo "##[set-output name=version;]$(npx -c 'echo $npm_package_version')"
       - uses: actions/upload-artifact@v2
         with:
-          path: out/make/zip/${{ matrix.platform }}/${{ matrix.arch }}/mdocx-${{ matrix.platform }}-${{ matrix.arch }}-${{ env.NPM_PACKAGE_VERSION }}.zip
+          path: out/make/zip/${{ matrix.platform }}/${{ matrix.arch }}/mdocx-${{ matrix.platform }}-${{ matrix.arch }}-${{ steps.app.outputs.version }}.zip
