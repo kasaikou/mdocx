@@ -21,7 +21,7 @@ const config: ForgeConfig = {
     new MakerZIP({}, ['darwin', 'windows', 'linux']),
     new MakerRpm({}),
     new MakerDeb({}),
-    new MakerWix({}),
+    // new MakerWix({}),
   ],
 };
 
