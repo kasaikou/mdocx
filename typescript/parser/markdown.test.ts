@@ -28,8 +28,8 @@ test('example', function () {
         __dirname,
         '../..',
         process.platform === 'win32'
-          ? 'build/.venv/Scripts/python'
-          : 'build/.venv/bin/python'
+          ? '.venv/Scripts/python'
+          : '.venv/bin/python'
       )
     );
     child_process.execSync(
