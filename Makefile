@@ -15,16 +15,16 @@ OUT_ARTIFACT_DIR=out/mdocx-$(PLATFORM)-$(ARCH)
 poetry: poetry.lock poetry.toml pyproject.toml
 	poetry install --no-root
 
-poetry-requirements-lock: poetry
+requirements.lock: poetry
 	poetry export --without dev > $(BUILD_ARTIFACT_REQUIREMENTS_LOCK)
 
-packaged-python: poetry
+packaged-python-venv: poetry
 	poetry run virtualenv --always-copy $(BUILD_ARTIFACT_VENV)
 
-packaged-python-artifact: poetry-requirements-lock 
+packaged-python-library: packaged-python-venv requirements.lock
 	$(BUILD_ARTIFACT_PYTHON) -m pip install -r $(BUILD_ARTIFACT_REQUIREMENTS_LOCK)
 
-packaged-python: packaged-python-artifact
+packaged-python: packaged-python-library
 	$(BUILD_ARTIFACT_PYTHON) -m pip uninstall -y pip
 
 yarn: yarn.lock package.json
