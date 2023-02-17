@@ -7,6 +7,10 @@ env:
   NODE_VERSION: '18.13.0'
   PYTHON_VERSION: '3.10.10'
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   lint-check:
     runs-on: ubuntu-20.04
@@ -76,6 +80,7 @@ jobs:
           make electron-make ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }}
       - uses: actions/upload-artifact@v2
         with:
+          name: mdocx-${{ matrix.platform }}-${{ matrix.arch }}-${{ steps.app.outputs.version }}
           path: out/make/zip/${{ matrix.platform }}/${{ matrix.arch }}/mdocx-${{ matrix.platform }}-${{ matrix.arch }}-${{ steps.app.outputs.version }}.zip
     outputs:
       version: ${{ steps.app.outputs.version }}
