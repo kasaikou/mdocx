@@ -52,6 +52,9 @@ RUN add-apt-repository ppa:deadsnakes/ppa && \
     libwebkit2gtk-4.0-dev \
     git \
     build-essential \
+    rpm \
+    zip \
+    fakeroot \
     pkg-config \
     libssl-dev \
     libgtk-3-dev \
