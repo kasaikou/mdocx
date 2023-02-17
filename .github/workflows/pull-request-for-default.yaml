@@ -36,7 +36,7 @@ jobs:
           yarn --version
           poetry --version
       - name: makefile/test
-        run: make test NODE_ENV=development
+        run: make test NODE_ENV=development --debug=v
 
   multi-build:
     strategy:
@@ -71,7 +71,7 @@ jobs:
           poetry --version
       - name: make/electron-make
         run: |
-          make electron-make ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }}
+          make electron-make ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} --debug=v
       - name: bash/output-specification
         id: app
         shell: bash
