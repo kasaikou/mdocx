@@ -6,6 +6,7 @@ on:
 env:
   NODE_VERSION: '18.13.0'
   PYTHON_VERSION: '3.10.10'
+  POETRY_HOME: $HOME/.poetry
 
 jobs:
   lint-check:
@@ -52,6 +53,7 @@ jobs:
             os: windows-2019
           - platform: darwin
             os: macos-11
+
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -65,7 +67,7 @@ jobs:
       - name: bash/setup-poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+          echo "${{ env.POETRY_HOME }}/venv/bin" >> $GITHUB_PATH
       - name: bash/check-version
         run: |
           yarn --version
