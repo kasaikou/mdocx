@@ -16,23 +16,23 @@ poetry: poetry.lock poetry.toml pyproject.toml
 	poetry install --no-root
 
 requirements.lock: poetry
-	poetry export --without dev > $(BUILD_ARTIFACT_REQUIREMENTS_LOCK)
+	poetry export --without dev > "$(BUILD_ARTIFACT_REQUIREMENTS_LOCK)"
 
 packaged-python-venv: poetry
-	poetry run virtualenv --always-copy $(BUILD_ARTIFACT_VENV)
+	poetry run virtualenv --always-copy "$(BUILD_ARTIFACT_VENV)"
 
 packaged-python-library: packaged-python-venv requirements.lock
-	$(BUILD_ARTIFACT_PYTHON) -m pip install -r $(BUILD_ARTIFACT_REQUIREMENTS_LOCK)
+	"$(BUILD_ARTIFACT_PYTHON)" -m pip install -r "$(BUILD_ARTIFACT_REQUIREMENTS_LOCK)"
 
 packaged-python: packaged-python-library
-	$(BUILD_ARTIFACT_PYTHON) -m pip uninstall -y pip
+	"$(BUILD_ARTIFACT_PYTHON)" -m pip uninstall -y pip
 
 yarn: yarn.lock package.json
 	yarn install --frozen-lockfile
 
 packaged-resources: yarn
 	mkdir -p build/fonts
-	cp "node_modules/figlet/fonts/$(LOGO_FONT).flf" "build/fonts/$(LOGO_FONT).flf"
+	cp "node_modules/figlet/fonts/$(LOGO_FONT).flf" "$(BUILD_ARTIFACT_FONTS)/$(LOGO_FONT).flf"
 
 webpack: yarn webpack.config.ts
 	yarn webpack
@@ -43,7 +43,7 @@ electron-package: packaged-python packaged-resources webpack forge.config.ts
 electron-make: packaged-python packaged-resources webpack forge.config.ts
 	yarn electron-forge make -- --arch $(ARCH) --platform $(PLATFORM)
 
-yarn-test: poetry yarn
+yarn-test: poetry yarn packaged-resources
 	yarn test
 
 package: electron-package
