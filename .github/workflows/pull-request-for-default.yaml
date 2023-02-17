@@ -6,7 +6,7 @@ on:
   push:
     paths: [.github/workflows/pull-request-for-default.yaml, Makefile]
     branches-ignore:
-      - refs/remots/pull/**
+      - refs/remotes/pull/**
 env:
   NODE_VERSION: '18.13.0'
   PYTHON_VERSION: '3.10.10'
