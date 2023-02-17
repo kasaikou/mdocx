@@ -42,7 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [linux, windows, darwin]
+        platform: [linux, win32, darwin]
         arch: [x64]
         include:
           - platform: linux
