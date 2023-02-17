@@ -1,4 +1,5 @@
 import { Configuration } from 'webpack';
+import path from 'path';
 
 const isDev = process.env.NODE_ENV === 'development';
 const common: Configuration = {
@@ -7,7 +8,7 @@ const common: Configuration = {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.json'],
   },
   output: {
-    publicPath: './',
+    path: path.resolve(__dirname, 'build/webpack'),
   },
   module: {
     rules: [

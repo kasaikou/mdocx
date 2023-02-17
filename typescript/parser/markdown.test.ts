@@ -1,4 +1,5 @@
 import { ParseMarkdown } from './markdown';
+import child_process from 'child_process';
 import fs from 'fs';
 
 test('example', function () {
@@ -8,8 +9,15 @@ test('example', function () {
     '/workspace/example/example.docx',
     '/workspace/example/example-style.docx'
   );
-  fs.writeFileSync(
-    '/workspace/example/example.json',
-    JSON.stringify(doc, null, 2)
-  );
+
+  const body = JSON.stringify(doc, null, 2);
+
+  fs.writeFileSync('/workspace/example/example.json', body);
+  try {
+    child_process.execSync(`.venv/bin/python /workspace/python/mdocx.py`, {
+      input: body,
+    });
+  } catch (e) {
+    throw new Error(e.stderr.toString());
+  }
 });

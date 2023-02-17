@@ -1,0 +1,23 @@
+#!/bin/sh
+
+cd `dirname $0`/..
+
+# remove
+rm -rf build
+
+
+# package python
+poetry install --no-root &&
+poetry run virtualenv --always-copy build/.venv &&
+poetry export --without dev > requirements.lock &&
+build/.venv/bin/python -m pip install -r requirements.lock &&
+build/.venv/bin/python -m pip uninstall -y pip &&
+
+# package 
+font="Diet Cola" &&
+yarn install &&
+mkdir -p build/fonts &&
+cp "node_modules/figlet/fonts/${font}.flf" "build/fonts/${font}.flf" &&
+
+# package electron
+yarn package

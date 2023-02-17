@@ -85,6 +85,11 @@ typings/
 # Webpack
 .webpack/
 dist/
+build/
 
 # Electron-Forge
 out/
+
+# python
+.venv
+requirements.lock

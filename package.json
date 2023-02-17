@@ -2,10 +2,10 @@
   "name": "mdocx",
   "productName": "mdocx",
   "version": "0.1.0",
-  "main": "dist/main.js",
+  "main": "build/webpack/main.js",
   "scripts": {
     "test": "jest --no-cache",
-    "start": "cross-env NODE_ENV=\"development\" && webpack && electron-forge start",
+    "start": "cross-env NODE_ENV=\"development\" && webpack && electron-forge start -- convert example/example.md --template example/example-style.docx",
     "package": "cross-env NODE_ENV=\"production\" && webpack && electron-forge package",
     "make": "cross-env NODE_ENV=\"production\" && webpack && electron-forge make",
     "publish": "cross-env NODE_ENV=\"production\" && webpack && electron-forge publish",
@@ -46,8 +46,15 @@
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
+    "@types/figlet": "^1.5.5",
+    "@types/listr": "^0.14.4",
+    "@types/minimist": "^1.2.2",
+    "chalk": "^5.2.0",
     "electron-squirrel-startup": "^1.0.0",
+    "figlet": "^1.5.2",
+    "listr": "^0.14.3",
     "mathjax-full": "^3.2.2",
+    "minimist": "^1.2.8",
     "zod": "^3.20.6"
   }
 }
