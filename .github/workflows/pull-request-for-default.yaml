@@ -6,7 +6,6 @@ on:
 env:
   NODE_VERSION: '18.13.0'
   PYTHON_VERSION: '3.10.10'
-  POETRY_HOME: ~/.poetry
 
 jobs:
   lint-check:
@@ -29,10 +28,9 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - name: bash/setup-poetry
+      - name: python-pip/setup-poetry
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "${{ env.POETRY_HOME }}/venv/bin" >> $GITHUB_PATH
+          pip install poetry
       - name: bash/check-version
         run: |
           yarn --version
@@ -64,10 +62,9 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - name: bash/setup-poetry
+      - name: python-pip/setup-poetry
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "${{ env.POETRY_HOME }}/venv/bin" >> $GITHUB_PATH
+          pip install poetry
       - name: bash/check-version
         run: |
           yarn --version
