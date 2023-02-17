@@ -36,7 +36,9 @@ test('example', function () {
       `${path.resolve(
         path.join(
           __dirname,
-          process.platform === 'win32' ? 'build/mdocx.exe' : 'build/mdocx'
+          process.platform === 'win32'
+            ? '../../build/mdocx.exe'
+            : '../../build/mdocx'
         )
       )}`,
       {
