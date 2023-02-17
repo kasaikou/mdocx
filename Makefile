@@ -19,10 +19,11 @@ yarn: yarn.lock package.json
 	yarn install --frozen-lockfile
 
 packaged-python: poetry
+	mkdir -p build
 	poetry run virtualenv --always-copy $(BUILD_ARTIFACT_VENV)
 	poetry export --without dev > $(BUILD_ARTIFACT_REQUIREMENTS_LOCK)
-	$(BUILD_ARTIFACT_PYTHON) -m pip install -r $(BUILD_ARTIFACT_REQUIREMENTS_LOCK)
-	$(BUILD_ARTIFACT_PYTHON) -m pip uninstall -y pip
+	bash -c "$(BUILD_ARTIFACT_PYTHON) -m pip install -r $(BUILD_ARTIFACT_REQUIREMENTS_LOCK)"
+	bash -c "$(BUILD_ARTIFACT_PYTHON) -m pip uninstall -y pip"
 
 packaged-resources: yarn
 	mkdir -p build/fonts
