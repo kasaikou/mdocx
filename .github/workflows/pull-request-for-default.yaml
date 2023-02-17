@@ -70,10 +70,13 @@ jobs:
           yarn --version
           poetry --version
       - name: make/electron-make
+        run: |
+          make electron-make ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }}
+      - name: bash/output-specification
         id: app
+        shell: bash
         run: |
           echo "version=`npm pkg get version | sed 's/"//g'`" >> $GITHUB_OUTPUT
-          make electron-make ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }}
       - uses: actions/upload-artifact@v2
         with:
           path: out/make/zip/${{ matrix.platform }}/${{ matrix.arch }}/mdocx-${{ matrix.platform }}-${{ matrix.arch }}-${{ steps.app.outputs.version }}.zip
