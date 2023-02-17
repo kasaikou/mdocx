@@ -3,11 +3,14 @@ import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import minimist from 'minimist';
+import child_process from 'child_process';
+import { ParseMarkdown } from '../parser/markdown';
 
 const logoFont = 'Diet Cola';
 type cliOptions = {
   debugMode: boolean;
   resourceDir: string;
+  pythonPath: string;
   arguments?: string[];
 };
 
@@ -84,7 +87,7 @@ async function cli(options: cliOptions) {
         return 2;
       }
       const template: string | undefined = args.template
-        ? args.template
+        ? path.resolve(args.template)
         : undefined;
       if (template === undefined) {
         console.error(
@@ -92,15 +95,47 @@ async function cli(options: cliOptions) {
         );
       }
 
+      // const tasks: ListrTask[] = [];
       const sources = args._.slice(1);
       for (const source of sources) {
         console.log(`${source} with template ${template}`);
-        // TODO: write it!
+        const sourcePath = path.resolve(source);
+        const sourceDir = path.resolve(path.dirname(sourcePath));
+        const pythonConvertScriptPath = path.resolve(
+          path.join(options.resourceDir, 'python/mdocx.py')
+        );
+        const docxPath = path.resolve(
+          path.join(sourceDir, path.basename(sourcePath, '.md') + '.docx')
+        );
+        const parsed = ParseMarkdown(
+          fs.readFileSync(sourcePath, { encoding: 'utf-8' }),
+          sourceDir,
+          docxPath,
+          template
+        );
+
+        const body = JSON.stringify(parsed, null);
+        try {
+          child_process.execSync(
+            `${options.pythonPath} ${pythonConvertScriptPath}`,
+            {
+              input: body,
+            }
+          );
+        } catch (e) {
+          throw new Error(e.stderr.toString());
+        }
+
+        if (quiet == false) {
+          console.log(
+            `${chalk.bold.redBright('Generated')} 🎉 ${chalk.green(
+              docxPath
+            )} from ${chalk.blueBright(sourcePath)}`
+          );
+        }
       }
     }
   }
-
-  console.log(chalk.yellowBright(await printFiglet('mdocx', loadingFont)));
 }
 
 export default cli;

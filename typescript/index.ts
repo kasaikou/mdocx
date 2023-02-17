@@ -4,7 +4,7 @@ import path from 'path';
 import cli from './worker/cli';
 
 const isPackaged =
-  path.basename(process.argv0, '.exe').startsWith('electron') == false;
+  path.basename(process.argv[0], '.exe').startsWith('electron') == false;
 const debugMode = isPackaged || process.env.NODE_ENV === 'development';
 const resourcePath = app.isPackaged ? process.resourcesPath : '.';
 const pythonPath = path.resolve(
@@ -24,6 +24,7 @@ async function main() {
   await cli({
     resourceDir: resourcePath,
     debugMode: debugMode,
+    pythonPath: pythonPath,
     arguments: process.argv.slice(isPackaged ? 1 : 2),
   });
   app.exit(0);
