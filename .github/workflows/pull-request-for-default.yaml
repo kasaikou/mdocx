@@ -63,6 +63,7 @@ jobs:
         run: |
           make packaged-python-venv ARCH=x64 PLATFORM=windows --debug=v
       - name: bash/check-directory
+        shell: bash
         run: |
           ls -al .
           ls -al ./build
