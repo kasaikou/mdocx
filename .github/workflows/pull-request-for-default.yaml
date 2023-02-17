@@ -1,11 +1,12 @@
 on:
   pull_request:
-    branches: [main]
     paths-ignore:
       - '**.md'
       - '/.**'
   push:
     paths: [.github/workflows/pull-request-for-default.yaml, Makefile]
+    branches-ignore:
+      - refs/remots/pull/**
 env:
   NODE_VERSION: '18.13.0'
   PYTHON_VERSION: '3.10.10'
