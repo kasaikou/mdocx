@@ -23,11 +23,6 @@ const pythonPath = path.resolve(
 async function main() {
   if (debugMode) {
     console.log('THIS IS DEBUG MODE');
-    console.log(`resource path: ${resourcePath}`);
-    console.log(
-      `Python version:`,
-      await execSync(`${pythonPath} --version`).toString()
-    );
   }
 
   await cli({

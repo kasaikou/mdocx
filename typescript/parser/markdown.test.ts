@@ -33,8 +33,11 @@ test('example', function () {
       )
     );
     child_process.execSync(
-      `${pythonPath} ${path.resolve(
-        path.join(__dirname, '../../python/mdocx.py')
+      `${path.resolve(
+        path.join(
+          __dirname,
+          process.platform === 'win32' ? 'build/mdocx.exe' : 'build/mdocx'
+        )
       )}`,
       {
         input: body,

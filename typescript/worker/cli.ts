@@ -102,7 +102,10 @@ async function cli(options: cliOptions) {
         const sourcePath = path.resolve(source);
         const sourceDir = path.resolve(path.dirname(sourcePath));
         const pythonConvertScriptPath = path.resolve(
-          path.join(options.resourceDir, 'python/mdocx.py')
+          path.join(
+            options.resourceDir,
+            process.platform === 'win32' ? 'build/mdocx.exe' : 'build/mdocx'
+          )
         );
         const docxPath = path.resolve(
           path.join(sourceDir, path.basename(sourcePath, '.md') + '.docx')
@@ -116,12 +119,9 @@ async function cli(options: cliOptions) {
 
         const body = JSON.stringify(parsed, null);
         try {
-          child_process.execSync(
-            `${options.pythonPath} ${pythonConvertScriptPath}`,
-            {
-              input: body,
-            }
-          );
+          child_process.execSync(`${pythonConvertScriptPath}`, {
+            input: body,
+          });
         } catch (e) {
           throw new Error(e.stderr.toString());
         }

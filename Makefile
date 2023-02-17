@@ -19,17 +19,10 @@ OUT_ARTIFACT_DIR=out/mdocx-$(PLATFORM)-$(ARCH)
 poetry: poetry.lock poetry.toml pyproject.toml
 	poetry install --no-root
 
-requirements.lock: poetry
-	poetry export --without dev > "$(BUILD_ARTIFACT_REQUIREMENTS_LOCK)"
-
-packaged-python-venv: poetry
-	poetry run virtualenv --always-copy "$(BUILD_ARTIFACT_VENV)"
-
-packaged-python-library: packaged-python-venv requirements.lock
-	"$(BUILD_ARTIFACT_PYTHON)" -m pip install -r "$(BUILD_ARTIFACT_REQUIREMENTS_LOCK)"
-
-packaged-python: packaged-python-library
-	"$(BUILD_ARTIFACT_PYTHON)" -m pip uninstall -y pip
+build/mdocx: poetry
+	poetry run pyinstaller python/mdocx.py --onefile
+	rm -rf $(BUILD_ARTIFACT_DIR)/mdocx
+	mv dist/mdocx $(BUILD_ARTIFACT_DIR)/
 
 yarn: yarn.lock package.json
 	yarn install --frozen-lockfile
@@ -41,13 +34,13 @@ packaged-resources: yarn
 webpack: yarn webpack.config.ts
 	yarn webpack
 
-electron-package: packaged-python packaged-resources webpack forge.config.ts
+electron-package: build/mdocx packaged-resources webpack forge.config.ts
 	yarn electron-forge package -- --arch $(ARCH) --platform $(PLATFORM)
 
-electron-make: packaged-python packaged-resources webpack forge.config.ts
+electron-make: build/mdocx packaged-resources webpack forge.config.ts
 	yarn electron-forge make -- --arch $(ARCH) --platform $(PLATFORM)
 
-yarn-test: poetry yarn packaged-resources
+yarn-test: build/mdocx yarn packaged-resources
 	yarn test
 
 package: electron-package
