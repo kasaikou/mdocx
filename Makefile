@@ -16,7 +16,7 @@ poetry: poetry.lock poetry.toml pyproject.toml
 	poetry install --no-root
 
 yarn: yarn.lock package.json
-	yarn install
+	yarn install --frozen-lockfile
 
 packaged-python: poetry
 	poetry run virtualenv --always-copy $(BUILD_ARTIFACT_VENV)
