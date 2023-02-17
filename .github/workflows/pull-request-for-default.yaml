@@ -1,6 +1,9 @@
 on:
   pull_request:
     branches: [main]
+    paths-ignore:
+      - '**.md'
+      - '/.**'
   push:
     paths: [.github/workflows/pull-request-for-default.yaml, Makefile]
 env:
