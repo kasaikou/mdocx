@@ -70,7 +70,7 @@ jobs:
           yarn --version
           poetry --version
       - name: bash/backslash
-        if: ${{ contains(matrix.os, windows) }}
+        if: ${{ contains(matrix.os, 'windows') }}
         run: |
           sed -i 's@\/@\\@g' ./Makefile
       - name: make/electron-make
