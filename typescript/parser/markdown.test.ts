@@ -25,6 +25,7 @@ test('example', function () {
   try {
     const pythonPath = path.resolve(
       path.join(
+        __dirname,
         '../..',
         process.platform === 'win32'
           ? 'build/.venv/Scripts/python'

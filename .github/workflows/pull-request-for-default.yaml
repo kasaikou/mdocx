@@ -38,38 +38,6 @@ jobs:
       - name: makefile/test
         run: make test NODE_ENV=development --debug=v
 
-  windows-build:
-    runs-on: windows-2019
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          # cache: yarn
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-      - name: python-pip/setup-poetry
-        run: |
-          pip install poetry
-      - name: bash/check-version
-        run: |
-          yarn --version
-          poetry --version
-      - name: bash/backslash
-        run: |
-          sed -i 's@\/@\\@g' ./Makefile
-      - name: make/electron-make
-        run: |
-          make packaged-python-venv ARCH=x64 PLATFORM=windows --debug=v
-      - name: bash/check-directory
-        shell: bash
-        run: |
-          ls -al .
-          ls -al ./build
-          ls -al ./build/.venv
-          ls -al ./build/.venv/bin
-
   multi-build:
     strategy:
       fail-fast: false
@@ -79,7 +47,7 @@ jobs:
         include:
           - platform: linux
             os: ubuntu-20.04
-          - platform: windows
+          - platform: win32
             os: windows-2019
           - platform: darwin
             os: macos-11
