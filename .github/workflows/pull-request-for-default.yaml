@@ -1,0 +1,90 @@
+on:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - '/.**'
+  # push:
+  #   paths: [.github/workflows/pull-request-for-default.yaml, Makefile]
+env:
+  NODE_VERSION: '18.13.0'
+  PYTHON_VERSION: '3.10.10'
+
+jobs:
+  lint-check:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          # cache: yarn
+
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          # cache: yarn
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: python-pip/setup-poetry
+        run: |
+          pip install poetry
+      - name: bash/check-version
+        run: |
+          yarn --version
+          poetry --version
+      - name: makefile/test
+        run: make test NODE_ENV=development --debug=v
+
+  multi-build:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [linux, win32, darwin]
+        arch: [x64]
+        include:
+          - platform: linux
+            os: ubuntu-20.04
+          - platform: win32
+            os: windows-2019
+          - platform: darwin
+            os: macos-11
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          # cache: yarn
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: python-pip/setup-poetry
+        run: |
+          pip install poetry
+      - name: bash/check-version
+        run: |
+          yarn --version
+          poetry --version
+      - name: bash/backslash
+        if: ${{ contains(matrix.os, 'windows') }}
+        run: |
+          sed -i 's@\/@\\@g' ./Makefile
+      - name: make/electron-make
+        run: |
+          make electron-make ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} --debug=v
+      - name: bash/output-specification
+        id: app
+        shell: bash
+        run: |
+          echo "version=`npm pkg get version | sed 's/"//g'`" >> $GITHUB_OUTPUT
+      - uses: actions/upload-artifact@v2
+        with:
+          path: out/make/zip/${{ matrix.platform }}/${{ matrix.arch }}/mdocx-${{ matrix.platform }}-${{ matrix.arch }}-${{ steps.app.outputs.version }}.zip
+    outputs:
+      version: ${{ steps.app.outputs.version }}

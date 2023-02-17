@@ -17,11 +17,11 @@ const config: ForgeConfig = {
   },
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({}),
-    new MakerZIP({}, ['darwin', 'windows', 'linux']),
+    // new MakerSquirrel({}),
+    new MakerZIP({}, ['darwin', 'win32', 'linux']),
     new MakerRpm({}),
     new MakerDeb({}),
-    new MakerWix({}),
+    // new MakerWix({}),
   ],
 };
 

@@ -93,3 +93,4 @@ out/
 # python
 .venv
 requirements.lock
+*.spec
