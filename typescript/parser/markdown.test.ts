@@ -18,11 +18,19 @@ test('example', function () {
 
   const body = JSON.stringify(doc, null, 2);
 
-  fs.writeFileSync('/workspace/example/example.json', body);
+  fs.writeFileSync(
+    path.resolve(path.join(__dirname, '../../example/example.json')),
+    body
+  );
   try {
-    child_process.execSync(`.venv/bin/python /workspace/python/mdocx.py`, {
-      input: body,
-    });
+    child_process.execSync(
+      `.venv/bin/python ${path.resolve(
+        path.join(__dirname, '../../python/mdocx.py')
+      )}`,
+      {
+        input: body,
+      }
+    );
   } catch (e) {
     throw new Error(e.stderr.toString());
   }
