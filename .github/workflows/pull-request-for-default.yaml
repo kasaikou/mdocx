@@ -54,12 +54,10 @@ jobs:
       - name: python-pip/setup-poetry
         run: |
           pip install poetry==${{ env.POETRY_VERSION }}
-      - uses: msys2/setup-msys2@v2
+      - name: choco/setup-dependencies
         if: ${{ contains(matrix.os, 'windows') }}
-        with:
-          update: true
-          install: >-
-            mingw-w64-x86_64-gtk3
+        run: |
+          choco install -y graphviz
       - name: bash/check-version
         run: |
           yarn --version
