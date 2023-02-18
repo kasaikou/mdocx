@@ -54,6 +54,10 @@ jobs:
       - name: python-pip/setup-poetry
         run: |
           pip install poetry==${{ env.POETRY_VERSION }}
+      - name: windows/install-for-testing
+        if: ${{ contains(runner.os, 'windows') }}
+        run: |
+          choco install -y gtk-runtime
       - name: bash/check-version
         run: |
           yarn --version
