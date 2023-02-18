@@ -48,6 +48,7 @@ jest: node_modules build/mdocx typescript
 test/$(OUT_ARTIFACT_DIR): $(OUT_ARTIFACT_DIR)
 	$(OUT_ARTIFACT_DIR)/mdocx convert example/example.md -t example/example-style.docx
 
+.PHONY: package
 package: $(OUT_ARTIFACT_DIR)
 
 .PHONY: test
