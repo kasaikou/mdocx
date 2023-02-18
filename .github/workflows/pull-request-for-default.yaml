@@ -53,7 +53,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: python-pip/setup-poetry
         run: |
-          pip install poetry==${{ POETRY_VERSION }}
+          pip install poetry==${{ env.POETRY_VERSION }}
       - name: bash/check-version
         run: |
           yarn --version
