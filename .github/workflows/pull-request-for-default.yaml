@@ -48,7 +48,7 @@ jobs:
           install: >-
             mingw-w64-x86_64-gtk3
             mingw-w64-x86_64-python3.10
-            mingw-w64-x86_64-python-pip
+            mingw-w64-x86_64-python-poetry
             mingw-w64-x86_64-python-setuptools
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
@@ -68,6 +68,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: python-pip/setup-poetry
+        if: ${{ !contains(matrix.os, 'windows') }}
         run: |
           pip install poetry==${{ env.POETRY_VERSION }}
       - name: bash/check-version
