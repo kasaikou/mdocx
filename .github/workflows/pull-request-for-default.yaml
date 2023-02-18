@@ -8,6 +8,7 @@ on:
 env:
   NODE_VERSION: '18.13.0'
   PYTHON_VERSION: '3.10.10'
+  POETRY_VERSION: '1.3.2'
 
 jobs:
   lint-check:
@@ -19,28 +20,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           # cache: yarn
 
-  test:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          # cache: yarn
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-      - name: python-pip/setup-poetry
-        run: |
-          pip install poetry
-      - name: bash/check-version
-        run: |
-          yarn --version
-          poetry --version
-      - name: makefile/test
-        run: make test NODE_ENV=development --debug=v
-
-  multi-build:
+  test-build:
     strategy:
       fail-fast: false
       matrix:
@@ -49,32 +29,64 @@ jobs:
         include:
           - platform: linux
             os: ubuntu-20.04
+            shell: bash
           - platform: win32
             os: windows-2019
+            shell: msys2 {0}
           - platform: darwin
             os: macos-11
-
+            shell: bash
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: ${{ matrix.shell}}
     steps:
+      - uses: msys2/setup-msys2@v2
+        if: ${{ contains(matrix.os, 'windows') }}
+        with:
+          update: true
+          install: >-
+            mingw-w64-x86_64-gtk3
+          path-type: inherit
       - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            ~/.cache/pip
+            .venv
+          key: ${{ runner.os }}-python-poetry-yarn-venv-cache-python[${{ env.PYTHON_VERSION }}]-poetry[${{ env.POETRY_VERSION }}]-yarn(${{ hashFiles('yarn.lock') }})-venv(${{ hashFiles('poetry.lock') }})
+          restore-keys: |
+            ${{ runner.os }}-python-poetry-yarn-venv-cache-
       - uses: actions/setup-node@v3
+        # if: ${{ !contains(matrix.os, 'windows') }}
         with:
           node-version: ${{ env.NODE_VERSION }}
-          # cache: yarn
       - uses: actions/setup-python@v4
+        # if: ${{ !contains(matrix.os, 'windows') }}
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: python-pip/setup-poetry
+        # if: ${{ !contains(matrix.os, 'windows') }}
         run: |
-          pip install poetry
+          pip install poetry==${{ env.POETRY_VERSION }}
       - name: bash/check-version
         run: |
           yarn --version
           poetry --version
-      - name: bash/backslash
-        if: ${{ contains(matrix.os, 'windows') }}
+      - name: make/test
         run: |
-          sed -i 's@\/@\\@g' ./Makefile
+          echo $PATH
+          make test ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} --debug=v
+      - name: failure/check-directory
+        if: failure() && contains(matrix.os, 'macos')
+        run: |
+          ls -al .
+          ls -al ./out
+          ls -al ./out/mdocx-${{ matrix.platform }}-${{ matrix.arch }}
+          ls -al ./out/mdocx-${{ matrix.platform }}-${{ matrix.arch }}/mdocx.app
+          ls -al ./out/mdocx-${{ matrix.platform }}-${{ matrix.arch }}/mdocx.app/Contents
+          ls -al ./out/mdocx-${{ matrix.platform }}-${{ matrix.arch }}/mdocx.app/Contents/MacOS
       - name: make/package
         run: |
           make package ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} --debug=v

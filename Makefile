@@ -13,7 +13,17 @@ BUILD_ARTIFACT_REQUIREMENTS_LOCK=$(BUILD_ARTIFACT_DIR)/requirements.lock
 BUILD_ARTIFACT_FONTS=$(BUILD_ARTIFACT_DIR)/fonts
 BUILD_ARTIFACT_WEBPACK=$(BUILD_ARTIFACT_DIR)/webpack
 LOGO_FONT=Diet Cola
-OUT_ARTIFACT_DIR=out/mdocx-$(PLATFORM)-$(ARCH)
+OUT_ARTIFACT_DIR=./out/mdocx-$(PLATFORM)-$(ARCH)
+MDOCX_linux=mdocx
+MDOCX_win32=mdocx.exe
+MDOCX_darwin=mdocx.app/Contents/MacOS/mdocx
+OUT_ARTIFACT_MDOCX=$(OUT_ARTIFACT_DIR)/$(MDOCX_$(PLATFORM))
+
+ifeq ($(PLATFORM),darwin)
+CMD_MDOCX=sudo $(OUT_ARTIFACT_MDOCX)
+else
+CMD_MDOCX=$(OUT_ARTIFACT_MDOCX)
+endif
 
 .venv: poetry.lock poetry.toml pyproject.toml
 	poetry install --no-root
@@ -43,20 +53,15 @@ out/make: node_modules build/mdocx build/fonts build/webpack forge.config.ts
 jest: node_modules build/mdocx typescript
 	yarn test
 
-# only linux sorry
-.PHONY: launch/$(OUT_ARTIFACT_DIR)
-test/$(OUT_ARTIFACT_DIR): $(OUT_ARTIFACT_DIR)
-	$(OUT_ARTIFACT_DIR)/mdocx convert example/example.md -t example/example-style.docx
+.PHONY: command-test
+command-test: $(OUT_ARTIFACT_DIR)
+	$(CMD_MDOCX) convert example/example.md -t example/example-style.docx
 
 .PHONY: package
 package: $(OUT_ARTIFACT_DIR)
 
 .PHONY: test
-ifeq ($(PLATFORM),linux)
-test: jest test/$(OUT_ARTIFACT_DIR)
-else
-test: jest
-endif
+test: jest command-test
 
 .PHONY: clean
 clean:

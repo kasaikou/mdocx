@@ -6,11 +6,7 @@ import cli from './worker/cli';
 const isPackaged =
   path.basename(process.argv[0], '.exe').startsWith('electron') == false;
 const debugMode = isPackaged || process.env.NODE_ENV === 'development';
-const resourcePath = isPackaged
-  ? path.resolve(
-      path.join(path.join(path.dirname(process.argv[0]), 'resources'))
-    )
-  : '.';
+const resourcePath = isPackaged ? process.resourcesPath : '.';
 const pythonPath = path.resolve(
   path.join(
     resourcePath,
