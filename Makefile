@@ -15,40 +15,52 @@ BUILD_ARTIFACT_WEBPACK=$(BUILD_ARTIFACT_DIR)/webpack
 LOGO_FONT=Diet Cola
 OUT_ARTIFACT_DIR=out/mdocx-$(PLATFORM)-$(ARCH)
 
-
-poetry: poetry.lock poetry.toml pyproject.toml
+.venv: poetry.lock poetry.toml pyproject.toml
 	poetry install --no-root
 
-build/mdocx: poetry
+build/mdocx: .venv
 	poetry run pyinstaller python/mdocx.py --onefile
 	rm -rf $(BUILD_ARTIFACT_DIR)/mdocx
 	mv dist/mdocx $(BUILD_ARTIFACT_DIR)/
 
-yarn: yarn.lock package.json
+node_modules: yarn.lock package.json
 	yarn install --frozen-lockfile
 
-packaged-resources: yarn
+build/fonts: node_modules
 	mkdir -p build/fonts
 	cp "node_modules/figlet/fonts/$(LOGO_FONT).flf" "$(BUILD_ARTIFACT_FONTS)/$(LOGO_FONT).flf"
 
-webpack: yarn webpack.config.ts
+build/webpack: node_modules webpack.config.ts typescript
 	yarn webpack
 
-electron-package: build/mdocx packaged-resources webpack forge.config.ts
+$(OUT_ARTIFACT_DIR): node_modules build/mdocx build/fonts build/webpack forge.config.ts
 	yarn electron-forge package -- --arch $(ARCH) --platform $(PLATFORM)
 
-electron-make: build/mdocx packaged-resources webpack forge.config.ts
+out/make: node_modules build/mdocx build/fonts build/webpack forge.config.ts
 	yarn electron-forge make -- --arch $(ARCH) --platform $(PLATFORM)
 
-yarn-test: build/mdocx yarn packaged-resources
+.PHONY: jest
+jest: node_modules build/mdocx typescript
 	yarn test
 
-package: electron-package
+# only linux sorry
+.PHONY: launch/$(OUT_ARTIFACT_DIR)
+test/$(OUT_ARTIFACT_DIR): $(OUT_ARTIFACT_DIR)
+	$(OUT_ARTIFACT_DIR)/mdocx convert example/example.md -t example/example-style.docx
 
-test: yarn-test
+.PHONY: package
+package: $(OUT_ARTIFACT_DIR)
+
+.PHONY: test
+ifeq ($(PLATFORM),linux)
+test: jest test/$(OUT_ARTIFACT_DIR)
+else
+test: jest
+endif
 
 .PHONY: clean
 clean:
 	rm -rf .venv
 	rm -rf node_modules
 	rm -rf build
+	rm -rf dist
