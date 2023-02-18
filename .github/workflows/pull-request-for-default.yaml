@@ -47,13 +47,7 @@ jobs:
           update: true
           install: >-
             mingw-w64-x86_64-gtk3
-            mingw-w64-x86_64-python3.10
-            mingw-w64-x86_64-python-poetry
-            mingw-w64-x86_64-python-setuptools
-            mingw-w64-x86_64-make
-            mingw-w64-x86_64-toolchain
-            mingw-w64-x86_64-yarn
-            mingw-w64-x86_64-nodejs
+          path-type: inherit
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
         with:
@@ -65,15 +59,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-python-poetry-yarn-venv-cache-
       - uses: actions/setup-node@v3
-        if: ${{ !contains(matrix.os, 'windows') }}
+        # if: ${{ !contains(matrix.os, 'windows') }}
         with:
           node-version: ${{ env.NODE_VERSION }}
       - uses: actions/setup-python@v4
-        if: ${{ !contains(matrix.os, 'windows') }}
+        # if: ${{ !contains(matrix.os, 'windows') }}
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: python-pip/setup-poetry
-        if: ${{ !contains(matrix.os, 'windows') }}
+        # if: ${{ !contains(matrix.os, 'windows') }}
         run: |
           pip install poetry==${{ env.POETRY_VERSION }}
       - name: bash/check-version
