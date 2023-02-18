@@ -39,6 +39,7 @@ build/webpack: node_modules webpack.config.ts typescript
 
 $(OUT_ARTIFACT_DIR): node_modules build/mdocx build/fonts build/webpack forge.config.ts
 	yarn electron-forge package -- --arch $(ARCH) --platform $(PLATFORM)
+	sudo chmod 755 $(OUT_ARTIFACT_MDOCX)
 
 out/make: node_modules build/mdocx build/fonts build/webpack forge.config.ts
 	yarn electron-forge make -- --arch $(ARCH) --platform $(PLATFORM)

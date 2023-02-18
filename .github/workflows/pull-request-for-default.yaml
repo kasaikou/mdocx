@@ -20,7 +20,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           # cache: yarn
 
-  multi-build:
+  test-build:
     strategy:
       fail-fast: false
       matrix:
