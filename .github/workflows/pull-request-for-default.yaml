@@ -29,12 +29,24 @@ jobs:
         include:
           - platform: linux
             os: ubuntu-20.04
+            shell: bash
           - platform: win32
             os: windows-2019
+            shell: msys2 {0}
           - platform: darwin
             os: macos-11
+            shell: bash
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: ${{ matrix.shell}}
     steps:
+      - uses: msys2/setup-msys2@v2
+        if: ${{ contains(matrix.os, 'windows') }}
+        with:
+          update: true
+          install: >-
+            mingw-w64-x86_64-gtk3
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
         with:
@@ -54,10 +66,6 @@ jobs:
       - name: python-pip/setup-poetry
         run: |
           pip install poetry==${{ env.POETRY_VERSION }}
-      - name: choco/setup-dependencies
-        if: ${{ contains(matrix.os, 'windows') }}
-        run: |
-          choco install -y graphviz
       - name: bash/check-version
         run: |
           yarn --version
