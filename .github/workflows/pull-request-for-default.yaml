@@ -72,7 +72,7 @@ jobs:
         run: |
           ls -al .
           ls -al ./out
-          ls -al ./mdocx-${{ matrix.platform }}-${{ matrix.arch }}
+          ls -al ./out/mdocx-${{ matrix.platform }}-${{ matrix.arch }}
       - name: make/package
         run: |
           make package ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} --debug=v
