@@ -54,23 +54,24 @@ jobs:
       - name: python-pip/setup-poetry
         run: |
           pip install poetry==${{ env.POETRY_VERSION }}
-      - name: windows/install-for-testing
-        if: ${{ contains(runner.os, 'windows') }}
-        run: |
-          choco install -y gtk-runtime
-      - name: bash/check-version
-        run: |
-          yarn --version
-          poetry --version
       - uses: msys2/setup-msys2@v2
         if: ${{ contains(matrix.os, 'windows') }}
         with:
           update: true
           install: >-
-            mingw-w64-x86_64-gtk4
+            mingw-w64-x86_64-gtk3
+      - name: bash/check-version
+        run: |
+          yarn --version
+          poetry --version
       - name: make/test
         run: |
           make test ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} --debug=v
+      - name: check dir
+        run: |
+          ls -al .
+          ls -al ./out
+          ls -al ./mdocx-${{ matrix.platform }}-${{ matrix.arch }}
       - name: make/package
         run: |
           make package ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} --debug=v
