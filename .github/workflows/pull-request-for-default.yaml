@@ -8,6 +8,7 @@ on:
 env:
   NODE_VERSION: '18.13.0'
   PYTHON_VERSION: '3.10.10'
+  POETRY_VERSION: '1.3.2'
 
 jobs:
   lint-check:
@@ -18,27 +19,6 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           # cache: yarn
-
-  test:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          # cache: yarn
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-      - name: python-pip/setup-poetry
-        run: |
-          pip install poetry
-      - name: bash/check-version
-        run: |
-          yarn --version
-          poetry --version
-      - name: makefile/test
-        run: make test NODE_ENV=development --debug=v
 
   multi-build:
     strategy:
@@ -53,20 +33,27 @@ jobs:
             os: windows-2019
           - platform: darwin
             os: macos-11
-
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            ~/.cache/pip
+            .venv
+          key: ${{ runner.os }}-python-poetry-yarn-venv-cache-python[${{ env.PYTHON_VERSION }}]-poetry[${{ env.POETRY_VERSION }}]-yarn(${{ hashFiles('yarn.lock') }})-venv(${{ hashFiles('poetry.lock') }})
+          restore-keys: |
+            ${{ runner.os }}-python-poetry-yarn-venv-cache-
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
-          # cache: yarn
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: python-pip/setup-poetry
         run: |
-          pip install poetry
+          pip install poetry==${{ POETRY_VERSION }}
       - name: bash/check-version
         run: |
           yarn --version
@@ -75,6 +62,9 @@ jobs:
         if: ${{ contains(matrix.os, 'windows') }}
         run: |
           sed -i 's@\/@\\@g' ./Makefile
+      - name: make/test
+        run: |
+          make test ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} --debug=v
       - name: make/package
         run: |
           make package ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} --debug=v

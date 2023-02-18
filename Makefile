@@ -14,6 +14,10 @@ BUILD_ARTIFACT_FONTS=$(BUILD_ARTIFACT_DIR)/fonts
 BUILD_ARTIFACT_WEBPACK=$(BUILD_ARTIFACT_DIR)/webpack
 LOGO_FONT=Diet Cola
 OUT_ARTIFACT_DIR=out/mdocx-$(PLATFORM)-$(ARCH)
+MDOCX_linux=mdocx
+MDOCX_win32=mdocx.exe
+MDOCX_darwin=mdocx.app
+OUT_ARTIFACT_MDOCX=$(OUT_ARTIFACT_DIR)/$(MDOCX_$(PLATFORM))
 
 .venv: poetry.lock poetry.toml pyproject.toml
 	poetry install --no-root
@@ -44,19 +48,15 @@ jest: node_modules build/mdocx typescript
 	yarn test
 
 # only linux sorry
-.PHONY: launch/$(OUT_ARTIFACT_DIR)
+.PHONY: test/$(OUT_ARTIFACT_DIR)
 test/$(OUT_ARTIFACT_DIR): $(OUT_ARTIFACT_DIR)
-	$(OUT_ARTIFACT_DIR)/mdocx convert example/example.md -t example/example-style.docx
+	$(OUT_ARTIFACT_MDOCX) convert example/example.md -t example/example-style.docx
 
 .PHONY: package
 package: $(OUT_ARTIFACT_DIR)
 
 .PHONY: test
-ifeq ($(PLATFORM),linux)
 test: jest test/$(OUT_ARTIFACT_DIR)
-else
-test: jest
-endif
 
 .PHONY: clean
 clean:
