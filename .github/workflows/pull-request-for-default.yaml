@@ -68,11 +68,14 @@ jobs:
         run: |
           make test ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} --debug=v
       - name: failure/check-directory
-        if: failure()
+        if: failure() && contains(matrix.os, 'macos')
         run: |
           ls -al .
           ls -al ./out
           ls -al ./out/mdocx-${{ matrix.platform }}-${{ matrix.arch }}
+          ls -al ./out/mdocx-${{ matrix.platform }}-${{ matrix.arch }}/mdocx.app
+          ls -al ./out/mdocx-${{ matrix.platform }}-${{ matrix.arch }}/mdocx.app/Contents
+          ls -al ./out/mdocx-${{ matrix.platform }}-${{ matrix.arch }}/mdocx.app/Contents/MacOS
       - name: make/package
         run: |
           make package ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} --debug=v

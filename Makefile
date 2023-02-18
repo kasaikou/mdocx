@@ -16,7 +16,7 @@ LOGO_FONT=Diet Cola
 OUT_ARTIFACT_DIR=./out/mdocx-$(PLATFORM)-$(ARCH)
 MDOCX_linux=mdocx
 MDOCX_win32=mdocx.exe
-MDOCX_darwin=mdocx.app
+MDOCX_darwin=mdocx.app/Contents/MacOS/mdocx
 OUT_ARTIFACT_MDOCX=$(OUT_ARTIFACT_DIR)/$(MDOCX_$(PLATFORM))
 
 ifeq ($(PLATFORM),darwin)
