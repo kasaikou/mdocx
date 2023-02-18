@@ -67,7 +67,8 @@ jobs:
       - name: make/test
         run: |
           make test ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} --debug=v
-      - name: check dir
+      - name: failure/check-directory
+        if: failure()
         run: |
           ls -al .
           ls -al ./out
