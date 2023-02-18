@@ -53,16 +53,15 @@ out/make: node_modules build/mdocx build/fonts build/webpack forge.config.ts
 jest: node_modules build/mdocx typescript
 	yarn test
 
-# only linux sorry
-.PHONY: test/$(OUT_ARTIFACT_DIR)
-test/$(OUT_ARTIFACT_DIR): $(OUT_ARTIFACT_DIR)
+.PHONY: command-test
+command-test: $(OUT_ARTIFACT_DIR)
 	$(CMD_MDOCX) convert example/example.md -t example/example-style.docx
 
 .PHONY: package
 package: $(OUT_ARTIFACT_DIR)
 
 .PHONY: test
-test: jest test/$(OUT_ARTIFACT_DIR)
+test: jest command-test
 
 .PHONY: clean
 clean:
