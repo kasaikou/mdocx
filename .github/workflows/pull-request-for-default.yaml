@@ -47,6 +47,7 @@ jobs:
           update: true
           install: >-
             mingw-w64-x86_64-gtk3
+            mingw-w64-x86_64-python3.10
             mingw-w64-x86_64-python-pip
             mingw-w64-x86_64-python-setuptools
       - uses: actions/checkout@v3
@@ -63,6 +64,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       - uses: actions/setup-python@v4
+        if: ${{ !contains(matrix.os, 'windows') }}
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: python-pip/setup-poetry
