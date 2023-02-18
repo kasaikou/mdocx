@@ -56,6 +56,7 @@ jobs:
           pip install poetry==${{ env.POETRY_VERSION }}
       - name: choco/setup-dependencies
         if: ${{ contains(matrix.os, 'windows') }}
+        shell: bash
         run: |
           $CONDA/bin/conda install -c conda-forge cairo
       - name: bash/check-version
