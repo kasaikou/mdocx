@@ -50,6 +50,8 @@ jobs:
             mingw-w64-x86_64-python3.10
             mingw-w64-x86_64-python-poetry
             mingw-w64-x86_64-python-setuptools
+            mingw-w64-yarn
+            mingw-w64-nodejs
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
         with:
@@ -61,6 +63,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-python-poetry-yarn-venv-cache-
       - uses: actions/setup-node@v3
+        if: ${{ !contains(matrix.os, 'windows') }}
         with:
           node-version: ${{ env.NODE_VERSION }}
       - uses: actions/setup-python@v4
