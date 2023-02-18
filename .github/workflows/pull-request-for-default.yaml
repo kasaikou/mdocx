@@ -57,7 +57,7 @@ jobs:
       - name: choco/setup-dependencies
         if: ${{ contains(matrix.os, 'windows') }}
         run: |
-          choco install -y graphviz
+          conda install -c conda-forge cairo
       - name: bash/check-version
         run: |
           yarn --version
