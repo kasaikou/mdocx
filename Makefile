@@ -19,6 +19,12 @@ MDOCX_win32=mdocx.exe
 MDOCX_darwin=mdocx.app
 OUT_ARTIFACT_MDOCX=$(OUT_ARTIFACT_DIR)/$(MDOCX_$(PLATFORM))
 
+ifeq ($(PLATFORM),darwin)
+CMD_MDOCX=sudo $(OUT_ARTIFACT_MDOCX)
+else
+CMD_MDOCX=$(OUT_ARTIFACT_MDOCX)
+endif
+
 .venv: poetry.lock poetry.toml pyproject.toml
 	poetry install --no-root
 
@@ -39,7 +45,6 @@ build/webpack: node_modules webpack.config.ts typescript
 
 $(OUT_ARTIFACT_DIR): node_modules build/mdocx build/fonts build/webpack forge.config.ts
 	yarn electron-forge package -- --arch $(ARCH) --platform $(PLATFORM)
-	sudo chmod 755 $(OUT_ARTIFACT_MDOCX)
 
 out/make: node_modules build/mdocx build/fonts build/webpack forge.config.ts
 	yarn electron-forge make -- --arch $(ARCH) --platform $(PLATFORM)
@@ -51,7 +56,7 @@ jest: node_modules build/mdocx typescript
 # only linux sorry
 .PHONY: test/$(OUT_ARTIFACT_DIR)
 test/$(OUT_ARTIFACT_DIR): $(OUT_ARTIFACT_DIR)
-	$(OUT_ARTIFACT_MDOCX) convert example/example.md -t example/example-style.docx
+	$(CMD_MDOCX) convert example/example.md -t example/example-style.docx
 
 .PHONY: package
 package: $(OUT_ARTIFACT_DIR)
