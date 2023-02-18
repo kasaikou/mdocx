@@ -82,7 +82,7 @@ jobs:
           poetry --version
       - name: make/test
         run: |
-          echp $PATH
+          echo $PATH
           make test ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} --debug=v
       - name: failure/check-directory
         if: failure() && contains(matrix.os, 'macos')
