@@ -48,6 +48,7 @@ jobs:
           install: >-
             mingw-w64-x86_64-gtk3
             mingw-w64-x86_64-python-pip
+            mingw-w64-x86_64-python-setuptools
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
         with:
