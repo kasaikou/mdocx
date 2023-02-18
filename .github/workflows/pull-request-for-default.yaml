@@ -75,9 +75,9 @@ jobs:
         if: ${{ contains(matrix.os, 'windows') }}
         run: |
           sed -i 's@\/@\\@g' ./Makefile
-      - name: make/electron-make
+      - name: make/package
         run: |
-          make electron-make ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} --debug=v
+          make package ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} --debug=v
       - name: bash/output-specification
         id: app
         shell: bash
