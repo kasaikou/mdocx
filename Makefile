@@ -18,6 +18,12 @@ MDOCX_linux=mdocx
 MDOCX_win32=mdocx.exe
 MDOCX_darwin=mdocx.app/Contents/MacOS/mdocx
 OUT_ARTIFACT_MDOCX=$(OUT_ARTIFACT_DIR)/$(MDOCX_$(PLATFORM))
+RELEASE_VERSION=
+RELEASE_ARTIFACTS_BASENAME=mdocx-$(PLATFORM)-$(ARCH)-$(RELEASE_VERSION)
+RELEASE_ARTIFACTS_linux_x64=./out/make/zip/$(PLATFORM)/$(ARCH)/$(RELEASE_ARTIFACTS_BASENAME).zip ./out/make/rpm/$(PLATFORM)/$(ARCH)/$(RELEASE_ARTIFACTS_BASENAME).rpm ./out/make/deb/$(PLATFORM)/$(ARCH)/$(RELEASE_ARTIFACTS_BASENAME).deb
+RELEASE_ARTIFACTS_win32_x64=./out/make/zip/$(PLATFORM)/$(ARCH)/$(RELEASE_ARTIFACTS_BASENAME).zip
+RELEASE_ARTIFACTS_darwin_x64=./out/make/zip/$(PLATFORM)/$(ARCH)/$(RELEASE_ARTIFACTS_BASENAME).zip
+RELEASE_ARTIFACTS=$(RELEASE_ARTIFACTS_$(PLATFORM)_$(ARCH))
 
 ifeq ($(PLATFORM),darwin)
 CMD_MDOCX=sudo $(OUT_ARTIFACT_MDOCX)
@@ -62,6 +68,13 @@ package: $(OUT_ARTIFACT_DIR)
 
 .PHONY: test
 test: jest command-test
+
+.PHONY: all
+all: test out/make
+
+.PHONY: release
+release: out/make
+	gh release upload $(RELEASE_ARTIFACTS) --clobber
 
 .PHONY: clean
 clean:

@@ -1,0 +1,81 @@
+on:
+  push:
+    tags:
+      - v*.*.*
+env:
+  NODE_VERSION: '18.13.0'
+  PYTHON_VERSION: '3.10.10'
+  POETRY_VERSION: '1.3.2'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: bash/get_tagname
+        id: tag
+        run: |
+          echo "version=${GITHUB_ref##*/}" >> $GITHUB_OUTPUT
+      - uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+    outputs:
+      release: ${{ steps.tag.outputs.version }}
+  upload-artifact:
+    needs: create-release
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [linux, win32, darwin]
+        arch: [x64]
+        include:
+          - platform: linux
+            os: ubuntu-20.04
+            shell: bash
+          - platform: win32
+            os: windows-2019
+            shell: msys2 {0}
+          - platform: darwin
+            os: macos-11
+            shell: bash
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+    steps:
+      - uses: msys2/setup-msys2@v2
+        if: ${{ contains(matrix.os, 'windows') }}
+        with:
+          update: true
+          install: >-
+            mingw-w64-x86_64-gtk3
+          path-type: inherit
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            ~/.cache/pip
+            .venv
+          key: ${{ runner.os }}-python-poetry-yarn-venv-cache-python[${{ env.PYTHON_VERSION }}]-poetry[${{ env.POETRY_VERSION }}]-yarn(${{ hashFiles('yarn.lock') }})-venv(${{ hashFiles('poetry.lock') }})
+          restore-keys: |
+            ${{ runner.os }}-python-poetry-yarn-venv-cache-
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: python-pip/setup-poetry
+        run: |
+          pip install poetry==${{ env.POETRY_VERSION }}
+      - name: bash/check-version
+        run: |
+          yarn --version
+          poetry --version
+      - name: make/release
+        run: |
+          echo $PATH
+          make release NODE_ENV=production ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} RELEASE_VERSION=${{ needs.create-release.outputs.release }} --debug=v
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
