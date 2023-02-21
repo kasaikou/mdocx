@@ -40,7 +40,7 @@ build/mdocx: .venv
 	mv dist/mdocx $(BUILD_ARTIFACT_DIR)/
 
 node_modules: yarn.lock package.json
-	yarn install --frozen-lockfile
+	yarn install --frozen-lockfile --production=false
 
 build/fonts: node_modules
 	mkdir -p build/fonts
