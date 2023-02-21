@@ -4,7 +4,6 @@
     "service": "devcontainer",
     "workspaceFolder": "/workspace",
     "remoteUser": "vscode",
-    "postCreateCommand": "/bin/sh .devcontainer/postCreate.sh",
     "postStartCommand": "yarn install",
     "customizations": {
         "vscode": {
