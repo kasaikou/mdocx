@@ -17,7 +17,7 @@ jobs:
       - name: bash/get_tagname
         id: tag
         run: |
-          echo "version=${GITHUB_ref##*/}" >> $GITHUB_OUTPUT
+          echo "version=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
       - uses: softprops/action-gh-release@v1
         with:
           generate_release_notes: true
