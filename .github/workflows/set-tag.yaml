@@ -10,6 +10,8 @@ env:
 jobs:
   create-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v2
       - name: bash/get_tagname
@@ -23,6 +25,8 @@ jobs:
       release: ${{ steps.tag.outputs.version }}
   upload-artifact:
     needs: create-release
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
