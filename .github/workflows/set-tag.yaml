@@ -80,7 +80,7 @@ jobs:
       - name: make/release
         run: |
           echo $PATH
-          make release NODE_ENV=production ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} RELEASE_VERSION=${VERSION##*v} --debug=v
+          make release NODE_ENV=production ARCH=${{ matrix.arch }} PLATFORM=${{ matrix.platform }} RELEASE_VERSION=${VERSION} --debug=v
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ needs.create-release.outputs.release }}
