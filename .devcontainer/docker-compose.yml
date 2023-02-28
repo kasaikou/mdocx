@@ -11,6 +11,7 @@ services:
       - ..:/workspace:cached
       - ${VENV:-venv}:/workspace/.venv
       - ${NODE_MODULES:-node_modules}:/workspace/node_modules
+      - ${HOME_CACHE:-~/.cache}:/home/vscode/.cache
     command: /bin/sh -c "while sleep 1000; do :; done"
     user: vscode
     privileged: true
