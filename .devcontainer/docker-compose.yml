@@ -9,8 +9,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ..:/workspace:cached
+      - ${VENV:-venv}:/workspace/.venv
+      - ${NODE_MODULES:-node_modules}:/workspace/node_modules
     command: /bin/sh -c "while sleep 1000; do :; done"
     user: vscode
     privileged: true
     environment:
       - DISPLAY=:0
+volumes:
+  node_modules:
+  venv:

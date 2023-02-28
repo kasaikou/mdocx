@@ -4,6 +4,9 @@
     "service": "devcontainer",
     "workspaceFolder": "/workspace",
     "remoteUser": "vscode",
+    "postCreateCommand": {
+        "volumes": "sh -c \"sudo chown -R vscode .venv && sudo chown -R vscode node_modules\""
+    },
     "postStartCommand": "yarn install",
     "customizations": {
         "vscode": {
